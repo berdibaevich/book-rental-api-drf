@@ -148,3 +148,17 @@ def patch_book(request, pk):
         status=status.HTTP_200_OK
     )
         
+
+@api_view(['DELETE'])
+def delete_book(request, pk):
+    try:
+        book = Book.objects.get(pk = pk)
+    except Book.DoesNotExist:
+        return response.Response(
+            {'errors': 'Book not found.'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    
+    book.delete()
+
+    return response.Response(status=status.HTTP_204_NO_CONTENT)

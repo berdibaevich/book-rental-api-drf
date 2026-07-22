@@ -7,6 +7,6 @@ urlpatterns = [
     path('create/', views.create_book, name='book-create'),
     path('<int:pk>/put/', views.put_book, name='book-put'),
     path('<int:pk>/patch/', views.patch_book, name='book-patch'),
-
+    path('<int:pk>/delete/', views.delete_book, name='book-delete'),
 
 ]
