@@ -101,3 +101,50 @@ def put_book(request, pk):
     book.categories.set(existing_categories)
 
     return response.Response({'message': 'Book updated successfully.'}, status=status.HTTP_200_OK)
+
+
+@api_view(['PATCH'])
+def patch_book(request, pk):
+    try:
+        book = Book.objects.get(pk = pk)
+    except Book.DoesNotExist:
+        return response.Response(
+            {'errors': 'Book not found.'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    
+    data = request.data
+    errors = {}
+
+    if 'title' in data:
+        if (title_val := data.get('title')) is None or not str(title_val).strip():
+            errors['title'] = ['This field cannot be null or empty!']   
+        else:
+            book.title = title_val
+
+    if 'description' in data:
+        book.description = data.get('description')
+
+    if 'category_ids' in data:
+        if not isinstance(category_ids := data.get('category_ids'), list):
+            errors['category_ids'] = ['category_ids must be a list of integers.']
+        
+        elif category_ids:
+            existing_categories = Category.objects.filter(id__in = category_ids)
+            if len(existing_categories) != len(set(category_ids)):
+                errors['category_ids'] = ['Some category IDs dont exist.']
+            else:
+                book.categories.set(category_ids)
+        else:
+            book.categories.clear()
+    
+    if errors:
+        return response.Response({'errors': errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    book.save()
+
+    return response.Response(
+        {'message': 'Book updated successfully [PATCH].'},
+        status=status.HTTP_200_OK
+    )
+        
