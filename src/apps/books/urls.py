@@ -3,10 +3,5 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.books, name='book-list'),
-    path('create/', views.create_book, name='book-create'),
-    path('<int:pk>/put/', views.put_book, name='book-put'),
-    path('<int:pk>/patch/', views.patch_book, name='book-patch'),
-    path('<int:pk>/delete/', views.delete_book, name='book-delete'),
-
+    path('', views.book_list_create, name='book-list-create'),
 ]
