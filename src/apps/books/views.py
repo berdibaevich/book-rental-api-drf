@@ -9,7 +9,7 @@ from .serializers import BookSerializer
 def book_list_create(request):
     match request.method:
         case "GET":
-            books = Book.objects.values('id', 'title', 'description')
+            books = Book.objects.all()
             serializers = BookSerializer(books, many=True)
             return response.Response(data=serializers.data, status=status.HTTP_200_OK)
 

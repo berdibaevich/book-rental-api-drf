@@ -1,12 +1,6 @@
 from rest_framework import serializers
-from django.core.validators import MinValueValidator
 from .models import Book, Category
 
-
-def validate_unique_items(value: int):
-    if len(value) != len(set(value)):
-        raise serializers.ValidationError("Category IDs must not be duplicate!")
-    return value
 
 
 class BookSerializer(serializers.Serializer):
@@ -19,24 +13,19 @@ class BookSerializer(serializers.Serializer):
         allow_blank=True
     )
 
-    category_ids = serializers.ListField(
-        child=serializers.IntegerField(validators=[MinValueValidator(1)]),
+    categories = serializers.PrimaryKeyRelatedField(
+        queryset=Category.objects.all(),
+        many=True,
         write_only=True,
-        allow_empty=False,
-        validators=[validate_unique_items]
+        allow_empty=False
     )
 
 
+
     def create(self, validated_data):
-        category_ids = validated_data.pop('category_ids')
+        categories = validated_data.pop('categories', [])
         book = Book.objects.create(**validated_data)
-        book.categories.set(category_ids) # Save category IDs
+        book.categories.set(categories)
         return book
-
-
-    def validate_category_ids(self, value):
-        existing_categories_count = Category.objects.filter(id__in=value).count()
-        if existing_categories_count != len(set(value)):
-            raise serializers.ValidationError("Some category IDs do not exists.")
-        return value
+    
 
