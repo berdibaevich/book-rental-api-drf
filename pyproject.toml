@@ -1,5 +1,5 @@
 [project]
-name = "kitapxana-api"
+name = "book-rental-api-drf"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -8,4 +8,5 @@ dependencies = [
     "django>=6.0.7",
     "django-environ>=0.14.0",
     "djangorestframework>=3.17.1",
+    "psycopg2-binary>=2.9.12",
 ]
