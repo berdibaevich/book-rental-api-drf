@@ -2,7 +2,11 @@ from rest_framework.decorators import api_view
 from rest_framework import status, response
 
 from .models import Category, Book
-from .serializers import BookSerializer
+from .serializers import (
+    BookSerializer,
+    BookListSerializer,
+    BookDetailSerializer
+)
 
 
 @api_view(['GET', 'POST'])
@@ -10,7 +14,7 @@ def book_list_create(request):
     match request.method:
         case "GET":
             books = Book.objects.all()
-            serializers = BookSerializer(books, many=True)
+            serializers = BookListSerializer(books, many=True)
             return response.Response(data=serializers.data, status=status.HTTP_200_OK)
 
         case "POST":
@@ -35,17 +39,13 @@ def book_detail_update_delete(request, pk):
     data = request.data
     errors = {}
 
-    # 1. GET (Detail)
-    if request.method == 'GET':
-        return response.Response(
-        {
-            'id': book.id,
-            'title': book.title,
-            'description': book.description,
-        },
-        status=status.HTTP_200_OK,
-    )
+    match request.method:
+        case "GET": 
+            serializer = BookDetailSerializer(book)
+            return response.Response(data=serializer.data, status=status.HTTP_200_OK)
 
+    if ...:
+        pass
 
     elif request.method == 'PUT':
         if 'title' not in data or data.get('title') is None or not str(data.get('title')).strip():
