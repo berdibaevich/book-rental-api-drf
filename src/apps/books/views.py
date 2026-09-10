@@ -3,9 +3,9 @@ from rest_framework import status, response
 
 from .models import Category, Book
 from .serializers import (
-    BookSerializer,
     BookListSerializer,
-    BookDetailSerializer
+    BookDetailSerializer,
+    BookCreateSerializer
 )
 
 
@@ -18,7 +18,7 @@ def book_list_create(request):
             return response.Response(data=serializers.data, status=status.HTTP_200_OK)
 
         case "POST":
-            serializer = BookSerializer(data=request.data)
+            serializer = BookCreateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
