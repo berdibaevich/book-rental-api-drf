@@ -5,7 +5,8 @@ from .models import Category, Book
 from .serializers import (
     BookListSerializer,
     BookDetailSerializer,
-    BookCreateSerializer
+    BookCreateSerializer,
+    BookUpdateSerializer
 )
 
 
@@ -43,6 +44,11 @@ def book_detail_update_delete(request, pk):
         case "GET": 
             serializer = BookDetailSerializer(book)
             return response.Response(data=serializer.data, status=status.HTTP_200_OK)
+        case "PUT":
+            serializer = BookUpdateSerializer(book, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return response.Response({'message': 'Book updated successfully.'}, status=status.HTTP_200_OK)
 
     if ...:
         pass
