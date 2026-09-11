@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework import status, response
 
@@ -29,13 +30,7 @@ def book_list_create(request):
 
 @api_view(['GET', 'PUT', 'PATCH', 'DELETE'])
 def book_detail_update_delete(request, pk):
-    try:
-        book = Book.objects.get(pk = pk)
-    except Book.DoesNotExist:
-        return response.Response(
-            {'errors': 'Book not found.'},
-            status=status.HTTP_404_NOT_FOUND
-        )
+    book = get_object_or_404(Book, pk=pk)
     
     match request.method:
         case "GET": 
