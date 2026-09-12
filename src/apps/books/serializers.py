@@ -27,29 +27,45 @@ class BookBaseSerializer(serializers.Serializer):
 
 
 
-class CategoryListSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(max_length=100)
+class CategoryListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('id', 'name')
 
 
 
-class BookListSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    title = serializers.CharField()
-    rental_rate = serializers.DecimalField(max_digits=8, decimal_places=2)
+class BookListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Book
+        fields = (
+            'id', 
+            'title', 
+            'rental_rate', 
+            'pages',
+            'last_update'
+        )
 
 
-class BookDetailSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    title = serializers.CharField(max_length=255)
-    description = serializers.CharField()
-    pages = serializers.IntegerField()
-    rental_duration = serializers.IntegerField()
-    rental_rate = serializers.DecimalField(max_digits=8, decimal_places=2)
-    replacement_cost = serializers.DecimalField(max_digits=8, decimal_places=2)
-    created_at = serializers.DateTimeField()
-    last_update = serializers.DateTimeField()
+
+
+class BookDetailSerializer(serializers.ModelSerializer):
     categories = CategoryListSerializer(many=True)
+    
+    class Meta:
+        model = Book
+        fields = (
+            "id",
+            "title",
+            "description",
+            "pages",
+            "rental_duration",
+            "rental_rate",
+            "replacement_cost",
+            "created_at",
+            "last_update",
+            "categories",
+        )
 
 
 
