@@ -6,8 +6,7 @@ from .models import Book
 from .serializers import (
     BookListSerializer,
     BookDetailSerializer,
-    BookCreateSerializer,
-    BookUpdateSerializer
+    BookCreateUpdateSerializer
 )
 
 
@@ -20,7 +19,7 @@ def book_list_create(request):
             return response.Response(data=serializers.data, status=status.HTTP_200_OK)
 
         case "POST":
-            serializer = BookCreateSerializer(data=request.data)
+            serializer = BookCreateUpdateSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -38,13 +37,13 @@ def book_detail_update_delete(request, pk):
             return response.Response(data=serializer.data, status=status.HTTP_200_OK)
         
         case "PUT":
-            serializer = BookUpdateSerializer(book, data=request.data)
+            serializer = BookCreateUpdateSerializer(book, data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return response.Response({'message': 'Book updated successfully.'}, status=status.HTTP_200_OK)
         
         case "PATCH":
-            serializer = BookUpdateSerializer(book, data=request.data, partial=True)
+            serializer = BookCreateUpdateSerializer(book, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return response.Response(
