@@ -2,12 +2,28 @@ from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework import status, response
 
-from .models import Book
+from .models import Book, Category
 from .serializers import (
     BookListSerializer,
     BookDetailSerializer,
-    BookCreateUpdateSerializer
+    BookCreateUpdateSerializer,
+    CategorySerializer
 )
+
+
+@api_view(['GET', 'POST'])
+def category_list_create(request):
+    match request.method:
+        case "GET":
+            categories = Category.objects.all()
+            serializers = CategorySerializer(categories, many=True)
+            return response.Response(data=serializers.data, status=status.HTTP_200_OK)
+        
+        case "POST":
+            serializer = CategorySerializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return response.Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET', 'POST'])
