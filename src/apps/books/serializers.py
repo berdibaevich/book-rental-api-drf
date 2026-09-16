@@ -3,10 +3,39 @@ from rest_framework import serializers
 from .models import Book, Category
 
 
+class CategoryListSerializer(serializers.ListSerializer):
+    def validate(self, attrs):
+        names = [item['name'] for item in attrs]
+        
+        if len(names) != len(set(names)):
+            raise serializers.ValidationError("Duplicate name!")
+        
+        existing_in_db = set(
+            Category.objects.filter(name__in=names).values_list("name", flat=True)
+        )
+ 
+        if existing_in_db:
+            raise serializers.ValidationError(
+                f"Categories already exist: {list(existing_in_db)}"
+            )
+        return attrs
+    
+    
+    def create(self, validated_data):
+        return Category.objects.bulk_create([Category(**item) for item in validated_data])
+
+
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = "__all__"
+        list_serializer_class = CategoryListSerializer
+        extra_kwargs = {
+            "name": {
+                'validators': []
+            }
+        }
 
 
 

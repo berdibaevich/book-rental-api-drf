@@ -20,7 +20,7 @@ def category_list_create(request):
             return response.Response(data=serializers.data, status=status.HTTP_200_OK)
         
         case "POST":
-            serializer = CategorySerializer(data=request.data)
+            serializer = CategorySerializer(data=request.data, many=True)
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return response.Response(serializer.data, status=status.HTTP_201_CREATED)
