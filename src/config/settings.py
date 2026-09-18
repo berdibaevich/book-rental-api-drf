@@ -24,6 +24,7 @@ INSTALLED_APPS = [
 
     # Apps
     'apps.books.apps.BooksConfig',
+    'apps.users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -70,6 +71,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = "users.UserBase"
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
