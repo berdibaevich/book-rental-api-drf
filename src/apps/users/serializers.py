@@ -1,5 +1,8 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
+from django.contrib.auth import get_user_model
+
+UserBase = get_user_model()
 
 
 
@@ -23,3 +26,8 @@ class LoginSerializer(serializers.Serializer):
         attrs['user'] = user
         return attrs
 
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserBase
+        fields = ('id', 'username', 'is_active')
