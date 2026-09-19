@@ -9,6 +9,8 @@ class UserBaseManager(BaseUserManager):
         other_fields.setdefault("is_staff", True)
         other_fields.setdefault("is_superuser", True)
         other_fields.setdefault("is_active", True)
+        other_fields.setdefault("role", Role.ADMIN)
+        
         user = self.model(
             username = username,
             **other_fields
@@ -18,8 +20,17 @@ class UserBaseManager(BaseUserManager):
         return user
 
 
+class Role(models.TextChoices):
+    ADMIN = 'ADMIN', 'Admin'
+    OWNER = 'OWNER', 'Owner'
+    STAFF = 'STAFF', 'Staff'
+    CUSTOMER = 'CUSTOMER', 'Customer'
+
+
+
 class UserBase(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=50, unique=True)
+    role = models.CharField(max_length=20, choices=Role.choices, default=Role.CUSTOMER)
 
     is_active = models.BooleanField(_("is_active"), default=False)
     is_staff = models.BooleanField(_("is_staff"), default=False)
