@@ -5,8 +5,21 @@ from rest_framework.authtoken.models import Token
 
 from .serializers import (
     LoginSerializer,
-    UserProfileSerializer
+    UserProfileSerializer,
+    SignUpSerializer
 )
+
+
+@api_view(['POST'])
+def sign_up_api(request):
+    serializer = SignUpSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return response.Response(
+        data=serializer.data,
+        status=status.HTTP_201_CREATED
+    )
+
 
 
 @api_view(['POST'])
