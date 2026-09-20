@@ -2,7 +2,12 @@ from django.db import models
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    library = models.ForeignKey(
+        'libraries.Library', 
+        on_delete=models.CASCADE, 
+        related_name='categories'
+    )
+    name = models.CharField(max_length=100)
     last_update = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -17,11 +22,14 @@ class Category(models.Model):
 
 
 class Book(models.Model):
-    title = models.CharField(max_length=255) # null=False, blank=False
-    description = models.TextField(blank=True, null=True)
-    # M2M Relationship
+    library = models.ForeignKey(
+        'libraries.Library', 
+        on_delete=models.CASCADE, 
+        related_name='books'
+    )
     categories = models.ManyToManyField(Category, related_name='books')
-
+    title = models.CharField(max_length=255, null=False, blank=False)
+    description = models.TextField(blank=True, null=True)
     pages = models.PositiveIntegerField(help_text="Number of pages in the book")
     
     rental_duration = models.PositiveSmallIntegerField(
