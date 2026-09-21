@@ -20,6 +20,14 @@ class UserBaseManager(BaseUserManager):
         return user
 
 
+    def create_user(self, username, password, **other_fields):
+        other_fields.setdefault("is_active", True)
+        user = self.model(username=username, **other_fields)
+        user.set_password(password)
+        user.save(using = self._db)
+        return user
+
+
 class Role(models.TextChoices):
     ADMIN = 'ADMIN', 'Admin'
     OWNER = 'OWNER', 'Owner'
