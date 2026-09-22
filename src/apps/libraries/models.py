@@ -4,7 +4,7 @@ from django.db import models
 class Library(models.Model):
     name = models.CharField(max_length=150)
     owner = models.ForeignKey(
-        'users.UserBase',
+        'accounts.UserBase',
         on_delete=models.CASCADE,
         related_name='libraries'
     )
