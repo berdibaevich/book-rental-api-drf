@@ -28,14 +28,6 @@ class UserBaseManager(BaseUserManager):
         return user
 
 
-class Role(models.TextChoices):
-    ADMIN = 'ADMIN', 'Admin'
-    OWNER = 'OWNER', 'Owner'
-    STAFF = 'STAFF', 'Staff'
-    CUSTOMER = 'CUSTOMER', 'Customer'
-
-
-
 class UserBase(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=50, unique=True)
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.CUSTOMER)
