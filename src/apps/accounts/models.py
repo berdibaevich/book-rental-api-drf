@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from ...utils.choices import Role
+
 
 class UserBaseManager(BaseUserManager):
     """Custom Manager"""
