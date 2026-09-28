@@ -1,47 +1,36 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, response
-from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import (
-    LoginSerializer,
-    UserProfileSerializer,
-    SignUpSerializer
+    SignUpSerializer,
+    MeSerializer
 )
 
 
 @api_view(['POST'])
-def sign_up_api(request):
+def signup_api(request):
     serializer = SignUpSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    serializer.save()
+    user = serializer.save()
+
+    refresh = RefreshToken.for_user(user)
+    refresh['username'] = user.username
+    refresh['role'] = user.role
+
     return response.Response(
-        data=serializer.data,
+        {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        },
         status=status.HTTP_201_CREATED
     )
 
 
 
-@api_view(['POST'])
-def login_api(request):
-    serializer = LoginSerializer(data=request.data, context={'request': request})
-    serializer.is_valid(raise_exception=True)
-    
-    user = serializer.validated_data['user']
-    token, created = Token.objects.get_or_create(user=user)
-
-    return response.Response(data={
-        'token': token.key,
-        'user_id': user.id,
-        'username': user.username
-    }, status=status.HTTP_200_OK)
-
-
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def me_api_view(request):
-    match request.method:
-        case 'GET':
-            serializer = UserProfileSerializer(request.user)
-            return response.Response(data=serializer.data, status=status.HTTP_200_OK)
+def me_api(request):
+    serializer = MeSerializer(request.user)
+    return response.Response(data=serializer.data, status=status.HTTP_200_OK)
