@@ -20,10 +20,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # External apps
     'rest_framework',
-    'rest_framework.authtoken',
 
-    # Apps
+
+    # Internal apps
     'apps.books.apps.BooksConfig',
     'apps.accounts.apps.AccountsConfig',
     'apps.libraries.apps.LibrariesConfig',
@@ -113,6 +114,6 @@ STATIC_URL = 'static/'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication'
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
