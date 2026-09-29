@@ -1,12 +1,21 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status, response
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import (
     SignUpSerializer,
-    MeSerializer
+    MeSerializer,
+    UserTokenObtainPairSerializer
 )
+
+
+
+@api_view(['POST'])
+def tokenObtainPairView(request):
+    serializer = UserTokenObtainPairSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    return response.Response(data=serializer.validated_data, status=status.HTTP_200_OK)
+
 
 
 @api_view(['POST'])
@@ -15,9 +24,7 @@ def signup_api(request):
     serializer.is_valid(raise_exception=True)
     user = serializer.save()
 
-    refresh = RefreshToken.for_user(user)
-    refresh['username'] = user.username
-    refresh['role'] = user.role
+    refresh = UserTokenObtainPairSerializer.get_token(user)
 
     return response.Response(
         {
