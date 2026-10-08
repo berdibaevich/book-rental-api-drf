@@ -3,9 +3,13 @@ from src.utils.choices import Role
 
 from .models import (
     Library, 
-    Store
+    Store,
+    Category,
+    Book
 )
 
+admin.site.register(Category)
+admin.site.register(Book)
 
 
 @admin.register(Library)
