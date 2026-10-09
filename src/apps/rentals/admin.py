@@ -8,8 +8,15 @@ from .models import (
     Book
 )
 
-admin.site.register(Category)
-admin.site.register(Book)
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'library')
+
+    
+@admin.register(Book)
+class BookAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'pages')
 
 
 @admin.register(Library)
@@ -28,4 +35,6 @@ class LibraryAdmin(admin.ModelAdmin):
         return super().save_model(request, obj, form, change)
 
 
-admin.site.register(Store)
+@admin.register(Store)
+class StoreAdmin(admin.ModelAdmin):
+    list_display = ('id', 'library')
