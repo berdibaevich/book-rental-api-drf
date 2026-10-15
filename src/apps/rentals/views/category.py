@@ -1,11 +1,12 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 
-from ..models import Category
+from ..models import Category, Library
 from ..serializers import (
-    CategoryListSerializer
+    CategoryListCreateSerializer,
 )
 from ..permissions import (
     IsOwnerLibrary
@@ -14,10 +15,29 @@ from ..permissions import (
 
 
 class CategoryListCreateAPIView(APIView):
-    permission_classes = (AllowAny, )
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return (AllowAny(), )
+        return (IsOwnerLibrary(), )
+
+
     def get(self, request, slug):
         categories = Category.objects.filter(library__slug = slug)
-        serializers = CategoryListSerializer(categories, many = True)
+        serializers = CategoryListCreateSerializer(categories, many = True)
         return Response(data=serializers.data, status=status.HTTP_200_OK)
+
+
+    def post(self, request, slug):
+        library = get_object_or_404(Library, slug=slug)
+        serializer = CategoryListCreateSerializer(
+            data=request.data, 
+            many=True,
+            allow_empty=False,
+            context={'library': library}
+            )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
 
