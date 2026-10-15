@@ -1,6 +1,6 @@
-from .category import category_list
+from .category import CategoryListCreateAPIView
 
 
 __all__ = (
-    'category_list',
+    'CategoryListCreateAPIView',
 )

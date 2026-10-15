@@ -1,10 +1,10 @@
 from django.urls import path
 from .views import (
-    category_list
+    CategoryListCreateAPIView
 )
 
 
 urlpatterns = [    
     # Category
-    path('categories/', category_list, name='category-list-create'),
+    path('libraries/<slug:slug>/categories/', CategoryListCreateAPIView.as_view(), name='category_list_create'),
 ]
