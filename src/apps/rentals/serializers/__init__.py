@@ -1,8 +1,10 @@
 from .category import (
-    CategoryListCreateSerializer
+    CategoryListCreateSerializer,
+    CategoryDetailSerializer
 )
 
 
 __all__ = (
     "CategoryListCreateSerializer",
+    "CategoryDetailSerializer"
 )

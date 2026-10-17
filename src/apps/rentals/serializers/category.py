@@ -35,3 +35,19 @@ class CategoryListCreateSerializer(serializers.ModelSerializer):
         fields = ('id', 'name')
         list_serializer_class = CategoryListSerializer
 
+
+
+
+class CategoryDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ('id', 'name')
+
+    def validate(self, attrs):
+        library = self.context['library']
+        name = attrs.get('name')
+
+        if Category.objects.filter(library=library, name=name).exclude(pk=getattr(self.instance, 'pk', None)).exists():
+            raise serializers.ValidationError(f"Failed: {name} already exist!")
+
+        return super().validate(attrs)

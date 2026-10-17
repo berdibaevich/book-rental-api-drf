@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -7,6 +8,7 @@ from rest_framework.permissions import AllowAny
 from ..models import Category, Library
 from ..serializers import (
     CategoryListCreateSerializer,
+    CategoryDetailSerializer
 )
 from ..permissions import (
     IsOwnerLibrary
@@ -41,3 +43,15 @@ class CategoryListCreateAPIView(APIView):
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
 
+
+class CategoryDetailAPIView(RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategoryDetailSerializer
+    permission_classes = (IsOwnerLibrary, )
+    lookup_field = 'id'
+
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['library'] = self.get_object().library
+        return context
