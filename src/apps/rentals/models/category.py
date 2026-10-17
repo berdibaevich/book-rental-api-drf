@@ -15,6 +15,11 @@ class Category(BaseModel):
         db_table = "category"
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['library', 'name'], name='unique_library_category_name'
+            )
+        ]
 
 
     def __str__(self):
